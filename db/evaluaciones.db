@@ -1,0 +1,72 @@
+-- Creación de la tabla universidades
+CREATE TABLE universidades (
+  id_universidad INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre_universidad TEXT,
+  ubicacion TEXT,
+  contacto TEXT
+);
+
+-- Creación de la tabla carreras
+CREATE TABLE carreras (
+  id_carrera INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_universidad INTEGER,
+  nombre_carrera TEXT,
+  FOREIGN KEY (id_universidad) REFERENCES universidades(id_universidad)
+);
+
+-- Creación de la tabla evaluaciones
+CREATE TABLE evaluaciones (
+  id_evaluacion INTEGER PRIMARY KEY AUTOINCREMENT,
+  fecha DATE,
+  evaluador TEXT,
+  informe_final TEXT
+);
+
+-- Creación de la tabla criterios
+CREATE TABLE criterios (
+  id_criterio INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre_criterio TEXT,
+  descripcion_criterio TEXT
+);
+
+-- Creación de la tabla resultado_criterio
+CREATE TABLE resultado_criterio (
+  id_resultado_criterio INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_criterio INTEGER,
+  puntuacion INTEGER,
+  comentarios TEXT,
+  FOREIGN KEY (id_criterio) REFERENCES criterios(id_criterio)
+);
+
+-- Creación de la tabla tiene (relación muchos a muchos entre criterios y evaluaciones)
+CREATE TABLE tiene (
+  id_criterio INTEGER,
+  id_evaluacion INTEGER,
+  PRIMARY KEY (id_criterio, id_evaluacion),
+  FOREIGN KEY (id_criterio) REFERENCES criterios(id_criterio),
+  FOREIGN KEY (id_evaluacion) REFERENCES evaluaciones(id_evaluacion)
+);
+
+-- Creación de la tabla observacion
+CREATE TABLE observacion (
+  id_observacion INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_evaluacion INTEGER,
+  descripcion_observacion TEXT,
+  autor TEXT,
+  FOREIGN KEY (id_evaluacion) REFERENCES evaluaciones(id_evaluacion)
+);
+
+-- Creación de la tabla universidades_carreras (relación de universidades con carreras)
+CREATE TABLE universidades_carreras (
+  id_universidad INTEGER,
+  id_carrera INTEGER,
+  PRIMARY KEY (id_universidad, id_carrera),
+  FOREIGN KEY (id_universidad) REFERENCES universidades(id_universidad),
+  FOREIGN KEY (id_carrera) REFERENCES carreras(id_carrera)
+);
+
+-- Creación de la tabla usuarios (para autenticación)
+CREATE TABLE usuarios (
+  usuario TEXT PRIMARY KEY,
+  password1 TEXT
+);
