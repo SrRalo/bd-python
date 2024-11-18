@@ -70,3 +70,5 @@ CREATE TABLE usuarios (
   usuario TEXT PRIMARY KEY,
   password1 TEXT
 );
+
+

@@ -1,5 +1,7 @@
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+from conexion_db import ConexionBD
+import mysql.connector
+from PyQt5.QtWidgets import QMessageBox
 
 
 class register11(object):
@@ -41,6 +43,8 @@ class register11(object):
         self.buttonBox.rejected.connect(RegistrarEvaluacion.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(RegistrarEvaluacion)
 
+        self.db = ConexionBD()
+
     def retranslateUi(self, RegistrarEvaluacion):
         _translate = QtCore.QCoreApplication.translate
         RegistrarEvaluacion.setWindowTitle(_translate("RegistrarEvaluacion", "Registrar Evaluacion"))
@@ -49,6 +53,36 @@ class register11(object):
         self.label_3.setText(_translate("RegistrarEvaluacion", "Evaluador:"))
         self.label_4.setText(_translate("RegistrarEvaluacion", "Informe Final:"))
 
+    def insertar_evaluacion(self):
+        # Obtener los datos de los campos
+        id_evaluacion = self.lineEdit.text()
+        fecha = self.lineEdit_2.text()
+        evaluador = self.lineEdit_3.text()
+        informe_final = self.lineEdit_4.text()
+
+        # Verificar que los campos no estén vacíos
+        if id_evaluacion and fecha and evaluador and informe_final:
+            try:
+                # Conectar a la base de datos (esto reutiliza la conexión abierta)
+                conexion = self.db.conectar()
+                if conexion:
+                    cursor = self.db.cursor  # Usar el cursor de la conexión
+                    # Ejecutar la consulta de inserción
+                    cursor.execute(
+                        "INSERT INTO evaluaciones (id_evaluacion, fecha, evaluador, informe_final) "
+                        "VALUES (%s, %s, %s, %s)",
+                        (id_evaluacion, fecha, evaluador, informe_final)
+                    )
+                    conexion.commit()  # Guardar los cambios
+
+                    # Mostrar mensaje de éxito
+                    QMessageBox.information(None, "Éxito", "Evaluación registrada correctamente.")
+            except mysql.connector.Error as err:
+                # Mostrar mensaje de error si algo falla
+                QMessageBox.critical(None, "Error", f"Error al registrar la evaluación: {err}")
+        else:
+            # Mensaje si falta algún dato
+            QMessageBox.warning(None, "Advertencia", "Por favor, complete todos los campos.")
 
 if __name__ == "__main__":
     import sys
