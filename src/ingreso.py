@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from menu import Ui_Sistema  # Importa la clase del menú
+from menu import Ui_Sistema  # Importa el menú
 
 class Ui_Ingreso(object):
     def setupUi(self, Ingreso):
@@ -43,14 +43,19 @@ class Ui_Ingreso(object):
         usuario = self.lineEdit.text()
         contraseña = self.lineEdit_2.text()
 
-        if usuario == "admin" and contraseña == "1234":  # Valida credenciales
-            self.window = QtWidgets.QMainWindow()
-            self.ui = Ui_Sistema()
-            self.ui.setupUi(self.window)
-            self.window.show()  # Muestra el sistema
-            QtWidgets.QApplication.instance().activeWindow().close()  # Cierra la ventana de ingreso
+        if usuario == "admin" and contraseña == "1234":
+            self.showSistema("admin")
+        elif usuario == "user" and contraseña == "abcd":
+            self.showSistema("user")
         else:
             QtWidgets.QMessageBox.warning(None, "Error", "Usuario o contraseña incorrectos")
+
+    def showSistema(self, role):
+        self.window = QtWidgets.QMainWindow()  # Mantén esta referencia
+        self.ui = Ui_Sistema()
+        self.ui.setupUi(self.window, role)  # Pasa el rol al menú
+        self.window.show()
+        QtWidgets.QApplication.instance().activeWindow().hide()  # Esconde la ventana de ingreso
 
 
 if __name__ == "__main__":
